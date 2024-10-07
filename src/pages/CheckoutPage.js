@@ -4,8 +4,36 @@ import ChekoutCreditCard from "../components/checkoutForm/omise-prebuilt-form/Ch
 import CheckoutInternetBanking from "../components/checkoutForm/omise-prebuilt-form/CheckoutInternetBanking";
 
 import "./CheckoutPage.css";
+import axios from "axios";
 
 export class CartCheckoutPage extends Component {
+  state = {
+    charge: undefined,
+  };
+
+  createCreditCardCharge = async (email, name, amount, token) => {
+    try {
+      const res = await axios({
+        method: "post",
+        url: "http://localhost:80/checkout-credit-card",
+        data: {
+          email,
+          name,
+          amount,
+          token,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = res.data;
+      this.setState({ charge: result });
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   render() {
     const { cart } = this.props;
 
@@ -16,16 +44,18 @@ export class CartCheckoutPage extends Component {
           <div className="cart-details">
             <h3>Total Amount: </h3>
             <h3>
-              <span> {new Intl.NumberFormat().format(cart.amount / 100)} thb</span>
+              <span>
+                {" "}
+                {new Intl.NumberFormat().format(cart.amount / 100)} thb
+              </span>
             </h3>
           </div>
         </div>
         <ChekoutCreditCard
           cart={cart}
+          createCreditCardCharge={this.createCreditCardCharge}
         />
-        <CheckoutInternetBanking
-          cart={cart}
-        />
+        <CheckoutInternetBanking cart={cart} />
         {/* <div className="message">
           {charge && (
             <div>

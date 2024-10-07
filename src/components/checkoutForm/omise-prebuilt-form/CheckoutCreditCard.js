@@ -29,10 +29,12 @@ export class Checkout extends Component {
   };
 
   omiseCardHandler = () => {
+    const { cart, createCreditCardCharge } = this.props;
     OmiseCard.open({
       frameDescription: "Invoice #3847",
-      amount: 10000,
+      amount: cart.amount,
       onCreateTokenSuccess: (token) => {
+        createCreditCardCharge(cart.email, cart.name, cart.amount, token);
         console.log(token);
       },
       onFormClosed: () => {},

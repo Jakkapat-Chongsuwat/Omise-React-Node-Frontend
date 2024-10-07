@@ -18,45 +18,46 @@ const products = [
   {
     id: uuid(),
     title: "Rooibos tea",
-    price: 20000
+    price: 20000,
   },
   {
     id: uuid(),
     title: "Green tea",
-    price: 29000
+    price: 29000,
   },
   {
     id: uuid(),
     title: "Black tea",
-    price: 25000
-  }
+    price: 25000,
+  },
 ];
 
 class App extends Component {
   state = {
     products,
     cart: {
+      email: "guest@test.com",
       name: "Guest",
       items: [],
       amount: 0,
-      totalQty: 0
+      totalQty: 0,
     },
-    addToCartMessage: undefined
+    addToCartMessage: undefined,
   };
 
-  addToCart = id => () => {
+  addToCart = (id) => () => {
     const { products, cart } = this.state;
     const newCart = { ...cart };
 
     // Find selected product from all products
-    const selectedProduct = products.find(product => product.id === id);
+    const selectedProduct = products.find((product) => product.id === id);
     if (!selectedProduct) {
       return;
     }
 
     // Check if the selected product is already in cart
     const checkIndexInCart = cart.items.findIndex(
-      product => product.id === selectedProduct.id
+      (product) => product.id === selectedProduct.id
     );
 
     if (checkIndexInCart >= 0) {
@@ -71,63 +72,63 @@ class App extends Component {
 
     // Update amount
     newCart.amount += selectedProduct.price;
-    newCart.totalQty += 1
+    newCart.totalQty += 1;
     this.setState({
       cart: newCart,
-      addToCartMessage: selectedProduct.title
+      addToCartMessage: selectedProduct.title,
     });
 
-    this.clearAddToCartMessage()
+    this.clearAddToCartMessage();
   };
 
   clearAddToCartMessage = () => {
     setTimeout(() => {
-      this.setState({addToCartMessage: undefined})
+      this.setState({ addToCartMessage: undefined });
     }, 1000);
-  }
+  };
 
-  deleteItemFromCart = id => () => {
+  deleteItemFromCart = (id) => () => {
     const { cart } = this.state;
     const newCart = { ...cart };
 
     // Find the deleted item
-    const deletedItem = cart.items.find(item => item.id === id);
+    const deletedItem = cart.items.find((item) => item.id === id);
 
     if (!deletedItem) return;
 
     // Filter out the deleted item from new cart
-    newCart.items = cart.items.filter(item => item.id !== id);
+    newCart.items = cart.items.filter((item) => item.id !== id);
 
     // Update amount
     newCart.amount -= deletedItem.quantity * deletedItem.price;
-    newCart.totalQty -= deletedItem.quantity
+    newCart.totalQty -= deletedItem.quantity;
 
     this.setState({ cart: newCart });
   };
 
-  increaseCartItemQty = id => () => {
+  increaseCartItemQty = (id) => () => {
     const { cart } = this.state;
     const newCart = { ...cart };
 
     // Find an index of the increased item in cart
-    const index = cart.items.findIndex(item => item.id === id);
+    const index = cart.items.findIndex((item) => item.id === id);
 
     if (index < 0) return;
 
     // Update quantity an amount
     newCart.items[index].quantity++;
     newCart.amount += newCart.items[index].price;
-    newCart.totalQty += 1
+    newCart.totalQty += 1;
 
     this.setState({ cart: newCart });
   };
 
-  decreaseCartItemQty = id => () => {
+  decreaseCartItemQty = (id) => () => {
     const { cart } = this.state;
     const newCart = { ...cart };
 
     // Find an index of the increased item in cart
-    const index = cart.items.findIndex(item => item.id === id);
+    const index = cart.items.findIndex((item) => item.id === id);
 
     if (index < 0) return;
 
@@ -135,7 +136,7 @@ class App extends Component {
       // Update quantity and amount and remove it from cart
       newCart.items[index].quantity--;
       newCart.amount -= newCart.items[index].price;
-      newCart.totalQty -= 1
+      newCart.totalQty -= 1;
       newCart.items.splice(index, 1);
 
       this.setState({ cart: newCart });
@@ -143,7 +144,7 @@ class App extends Component {
       // Update quantity an amount
       newCart.items[index].quantity--;
       newCart.amount -= newCart.items[index].price;
-      newCart.totalQty -= 1
+      newCart.totalQty -= 1;
 
       this.setState({ cart: newCart });
     }
@@ -155,8 +156,8 @@ class App extends Component {
         name: "Guest",
         items: [],
         amount: 0,
-        totalQty: 0
-      }
+        totalQty: 0,
+      },
     });
   };
 
@@ -164,15 +165,15 @@ class App extends Component {
     const { products, cart, addToCartMessage } = this.state;
 
     return (
-      <BrowserRouter >
+      <BrowserRouter>
         <React.Fragment>
-          <MainNavBar qty={cart.totalQty}/>
+          <MainNavBar qty={cart.totalQty} />
           <main className="App">
             <Switch>
               <Redirect from="/" to="/products" exact />
               <Route
                 path="/products"
-                render={props => (
+                render={(props) => (
                   <ProductPage
                     {...props}
                     products={products}
@@ -183,7 +184,7 @@ class App extends Component {
               />
               <Route
                 path="/cart"
-                render={props => (
+                render={(props) => (
                   <CartPage
                     {...props}
                     cart={cart}
@@ -198,7 +199,7 @@ class App extends Component {
 
               <Route
                 path="/checkout"
-                render={props => (
+                render={(props) => (
                   <CheckoutPage
                     {...props}
                     cart={cart}
